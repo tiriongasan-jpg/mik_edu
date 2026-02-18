@@ -1,0 +1,22 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<h3>Предмет: {{ subject.name }}</h3>
+<a href="/" class="btn btn-secondary mb-3">← К предметам</a>
+
+{% if error %}
+  <div class="alert alert-danger">{{ error }}</div>
+{% else %}
+  <h4>Модули</h4>
+  {% if modules %}
+    <div class="list-group">
+    {% for module in modules %}
+      <a href="{% url 'core:module_detail' module.id %}" class="list-group-item list-group-item-action">
+        {{ module.name }}
+      </a>
+    {% endfor %}
+    </div>
+  {% else %}
+    <p>Нет модулей</p>
+  {% endif %}
+{% endif %}
+{% endblock %}

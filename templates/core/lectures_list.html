@@ -1,0 +1,13 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<h3>Лекции</h3>
+{% if lectures %}
+  <div class="list-group">
+  {% for lec in lectures %}
+    <a class="list-group-item list-group-item-action" href="{% url 'core:lecture_detail' lec.pk %}">{{ lec.title }} — {{ lec.module.name }}</a>
+  {% endfor %}
+  </div>
+{% else %}
+  <p>Нет доступных лекций.</p>
+{% endif %}
+{% endblock %}

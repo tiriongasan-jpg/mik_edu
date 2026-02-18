@@ -1,0 +1,64 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Добро пожаловать, {{ user.get_full_name|default:user.username }}!</h2>
+    <p class="text-muted">Группа: <strong>{{ user.study_group }}</strong></p>
+
+    <div class="mb-4">
+        <a href="{% url 'core:student_journal' %}" class="btn btn-info">📊 Журнал оценок</a>
+    </div>
+
+    <!-- Расписание -->
+    {% if schedule %}
+        <div class="card mb-4">
+            <div class="card-header bg-warning text-dark">
+                <h4 class="mb-0">📅 Расписание вашей группы</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead class="table-light">
+                            <tr>
+                                <th>День</th>
+                                <th>Время</th>
+                                <th>Предмет</th>
+                                <th>Кабинет</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in schedule %}
+                                <tr>
+                                    <td><strong>{{ item.get_day_of_week_display }}</strong></td>
+                                    <td>{{ item.time }}</td>
+                                    <td>{{ item.subject }}</td>
+                                    <td>{{ item.room|default:"—" }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Предметы -->
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">📚 Ваши предметы</h4>
+        </div>
+        <div class="card-body">
+            {% if subjects %}
+                <div class="list-group">
+                {% for subject in subjects %}
+                    <a href="{% url 'core:subject_detail' subject.id %}" class="list-group-item list-group-item-action">
+                        {{ subject.name }} ({{ subject.modules.count }} модулей)
+                    </a>
+                {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-muted">Нет предметов</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,133 @@
+{% extends 'core/base.html' %}
+{% block title %}Журнал оценок{% endblock %}
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>📊 Журнал оценок</h2>
+        <a href="/" class="btn btn-secondary">← К предметам</a>
+    </div>
+
+    {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+    {% else %}
+        {% if subjects_data %}
+            <div class="table-responsive">
+                <table class="table table-sm table-striped table-hover" style="font-size: 0.95rem;">
+                    <thead class="table-dark sticky-top" style="top: 0;">
+                        <tr>
+                            <th style="width: 15%;">📚 Предмет</th>
+                            <th style="width: 15%;">Модуль</th>
+                            <th style="width: 20%;">Тест</th>
+                            <th style="width: 10%; text-align: center;">Баллы</th>
+                            <th style="width: 10%; text-align: center;">%</th>
+                            <th style="width: 15%;">Статус</th>
+                            <th style="width: 15%;">Дата</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for data in subjects_data %}
+                            {% for attempt in data.attempts %}
+                                <tr>
+                                    {% if forloop.first %}
+                                        <td rowspan="{{ data.count }}" style="vertical-align: middle; font-weight: bold; background-color: #f8f9fa;">
+                                            {{ data.subject.name }}
+                                        </td>
+                                    {% endif %}
+                                    <td>{{ attempt.test.module.name }}</td>
+                                    <td>{{ attempt.test.name }}</td>
+                                    <td style="text-align: center;">
+                                        <span class="badge bg-info">{{ attempt.score|floatformat:0 }}</span>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <strong>
+                                            {% if attempt.score >= 70 %}
+                                                <span class="text-success">{{ attempt.score|floatformat:0 }}%</span>
+                                            {% elif attempt.score >= 50 %}
+                                                <span class="text-warning">{{ attempt.score|floatformat:0 }}%</span>
+                                            {% else %}
+                                                <span class="text-danger">{{ attempt.score|floatformat:0 }}%</span>
+                                            {% endif %}
+                                        </strong>
+                                    </td>
+                                    <td>
+                                        {% if attempt.score >= 70 %}
+                                            <span class="badge bg-success">✅ Отлично</span>
+                                        {% elif attempt.score >= 50 %}
+                                            <span class="badge bg-warning text-dark">⚠️ Хорошо</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">❌ Переделать</span>
+                                        {% endif %}
+                                    </td>
+                                    <td style="font-size: 0.9rem; color: #666;">{{ attempt.created|date:"d.m.y H:i" }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Статистика по предметам -->
+            <div class="row mt-4">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">📈 Статистика по предметам</h5>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-sm mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Предмет</th>
+                                        <th style="text-align: center;">Попыток</th>
+                                        <th style="text-align: center;">Средний %</th>
+                                        <th style="text-align: center;">Лучший результат</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for data in subjects_data %}
+                                        <tr>
+                                            <td><strong>{{ data.subject.name }}</strong></td>
+                                            <td style="text-align: center;">{{ data.count }}</td>
+                                            <td style="text-align: center;">
+                                                <span class="badge {% if data.average >= 70 %}bg-success{% elif data.average >= 50 %}bg-warning{% else %}bg-danger{% endif %}">
+                                                    {{ data.average|floatformat:1 }}%
+                                                </span>
+                                            </td>
+                                            <td style="text-align: center;">
+                                                <strong>{{ data.max_score|floatformat:0 }}%</strong>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="alert alert-info" role="alert">
+                <h5>📋 Пока нет результатов тестирования</h5>
+                <p class="mb-0">Пройдите тесты по предметам, чтобы увидеть ваши результаты здесь.</p>
+            </div>
+        {% endif %}
+    {% endif %}
+</div>
+
+<style>
+    .table-responsive {
+        border-radius: 0.5rem;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    }
+    
+    .table thead th {
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+    }
+    
+    .table tbody tr:hover {
+        background-color: #f5f5f5;
+    }
+</style>
+{% endblock %}

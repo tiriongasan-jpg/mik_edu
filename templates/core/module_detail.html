@@ -1,0 +1,31 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<h3>Модуль: {{ module.name }}</h3>
+<a href="{% url 'core:subject_detail' module.subject.id %}" class="btn btn-secondary mb-3">← К предметам</a>
+
+<h4>Лекции</h4>
+{% if lectures %}
+  <div class="list-group mb-3">
+  {% for lecture in lectures %}
+    <a href="{% url 'core:lecture_detail' lecture.id %}" class="list-group-item list-group-item-action">
+      {{ lecture.title }}
+    </a>
+  {% endfor %}
+  </div>
+{% else %}
+  <p>Нет лекций</p>
+{% endif %}
+
+<h4>Тестирование</h4>
+{% if tests %}
+  <div class="list-group">
+  {% for test in tests %}
+    <a href="{% url 'core:take_test' test.id %}" class="list-group-item list-group-item-action">
+      {{ test.name }}
+    </a>
+  {% endfor %}
+  </div>
+{% else %}
+  <p>Нет тестов</p>
+{% endif %}
+{% endblock %}

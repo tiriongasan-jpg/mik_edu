@@ -1,0 +1,17 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<h3>{{ lecture.title }}</h3>
+{% if error %}
+  <div class="alert alert-danger">{{ error }}</div>
+{% else %}
+  {% if content %}
+    <div class="card p-3">{{ content|safe }}</div>
+  {% else %}
+    {% if lecture.file_ext == 'pdf' %}
+      <iframe src="{{ file_url }}" width="100%" height="800px"></iframe>
+    {% else %}
+      <p>Файл: <a href="{{ file_url }}">Скачать / Открыть</a></p>
+    {% endif %}
+  {% endif %}
+{% endif %}
+{% endblock %}

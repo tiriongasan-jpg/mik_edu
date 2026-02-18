@@ -1,0 +1,6 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<h3>Результат: {{ test.name }}</h3>
+<p>Ваш балл: {{ score }}%</p>
+<a href="{% url 'core:lectures_list' %}">Вернуться к лекциям</a>
+{% endblock %}
