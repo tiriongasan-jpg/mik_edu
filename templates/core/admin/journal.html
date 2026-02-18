@@ -1,0 +1,70 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <a href="{% url 'core:admin_panel' %}" class="btn btn-secondary mb-3">← Назад</a>
+    <h3>Журнал попыток тестирования</h3>
+    
+    {% if groups_list %}
+        {% for group_data in groups_list %}
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">{{ group_data.group.name }}</h4>
+                </div>
+                <div class="card-body">
+                    {% for subject_data in group_data.subjects %}
+                        <div class="mb-4">
+                            <h5 class="text-secondary mb-3">📚 {{ subject_data.subject.name }}</h5>
+                            
+                            {% if subject_data.attempts %}
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover table-sm">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Студент</th>
+                                                <th>Тест</th>
+                                                <th>Модуль</th>
+                                                <th>Баллы</th>
+                                                <th>Процент</th>
+                                                <th>Дата</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for attempt in subject_data.attempts %}
+                                                <tr>
+                                                    <td><strong>{{ attempt.user.get_full_name|default:attempt.user.username }}</strong></td>
+                                                    <td>{{ attempt.test.name }}</td>
+                                                    <td>{{ attempt.test.module.name }}</td>
+                                                    <td>{{ attempt.score|default:"-" }}</td>
+                                                    <td>
+                                                        {% if attempt.score %}
+                                                            <span class="badge {% if attempt.score >= 70 %}bg-success{% elif attempt.score >= 50 %}bg-warning{% else %}bg-danger{% endif %}">{{ attempt.score|floatformat:0 }}%</span>
+                                                        {% else %}
+                                                            <span class="text-muted">-</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>{{ attempt.created|date:"d.m.Y H:i" }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% else %}
+                                <p class="text-muted">Нет попыток по этому предмету</p>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    
+                    {% if not group_data.subjects %}
+                        <p class="text-muted">В этой группе нет предметов</p>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="alert alert-info">
+            <strong>Журнал пуст</strong><br>
+            Пока нет попыток прохождения тестов. Студенты начнут появляться здесь после первой попытки.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

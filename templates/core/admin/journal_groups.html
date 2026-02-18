@@ -1,0 +1,34 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Журнал - Группы{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <a href="{% url 'core:admin_panel' %}" class="btn btn-secondary mb-3">← Назад</a>
+    <h2 class="mb-4">Журнал тестирования - Выберите группу</h2>
+    
+    {% if groups %}
+        <div class="row">
+            {% for group in groups %}
+                <div class="col-md-6 mb-3">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ group.name }}</h5>
+                            <p class="card-text text-muted">Студентов: {{ group.user_set.count }}</p>
+                        </div>
+                        <div class="card-footer bg-white border-top">
+                            <a href="{% url 'core:admin_journal_group_detail' group.id %}" class="btn btn-primary btn-sm w-100">
+                                📊 Просмотреть предметы
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            Нет групп в системе
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

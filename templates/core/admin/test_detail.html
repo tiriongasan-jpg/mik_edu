@@ -1,0 +1,29 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<h3>Тест: {{ test.name }}</h3>
+<a href="{% url 'core:admin_module_detail' test.module.id %}" class="btn btn-secondary mb-3">← К предмету</a>
+
+<h4>Вопросы</h4>
+<div>
+  {% for question in questions %}
+  <div class="card mb-3">
+    <div class="card-body">
+      <h5 class="card-title">{{ forloop.counter }}. {{ question.text }}</h5>
+      <div class="card-text">
+        {% for choice in question.choices.all %}
+        <div class="form-check">
+          <input class="form-check-input" type="radio" disabled {% if choice.correct %}checked{% endif %}>
+          <label class="form-check-label">
+            {{ choice.text }}
+            {% if choice.correct %}<strong>(Правильный ответ)</strong>{% endif %}
+          </label>
+        </div>
+        {% endfor %}
+      </div>
+      <a href="/admin/core/question/{{ question.id }}/change/" class="btn btn-sm btn-outline-primary">Редактировать</a>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+<p><a href="/admin/core/question/add/?test={{ test.id }}" class="btn btn-success">Добавить вопрос</a></p>
+{% endblock %}

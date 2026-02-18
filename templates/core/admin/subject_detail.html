@@ -1,0 +1,17 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<h3>Предмет: {{ subject.name }}</h3>
+<a href="{% url 'core:admin_group_detail' subject.group.id %}" class="btn btn-secondary mb-3">← К предметам</a>
+
+<h4>Модули</h4>
+<div class="list-group">
+  {% for module in modules %}
+  <a href="{% url 'core:admin_module_detail' module.id %}" class="list-group-item list-group-item-action">
+    {{ module.name }}
+  </a>
+  {% empty %}
+  <p>Нет модулей</p>
+  {% endfor %}
+</div>
+<p><a href="/admin/core/module/add/?subject={{ subject.id }}" class="btn btn-success mt-3">Добавить модуль</a></p>
+{% endblock %}

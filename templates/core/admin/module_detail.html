@@ -1,0 +1,31 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<h3>Модуль: {{ module.name }}</h3>
+<a href="{% url 'core:admin_subject_detail' module.subject.id %}" class="btn btn-secondary mb-3">← К модулям</a>
+
+<h4>Лекции</h4>
+<div class="list-group mb-3">
+  {% for lecture in lectures %}
+  <div class="list-group-item">
+    <strong>{{ lecture.title }}</strong>
+    <a href="/admin/core/lecture/{{ lecture.id }}/change/" class="btn btn-sm btn-outline-primary">Редактировать</a>
+    <a href="/admin/core/lecture/{{ lecture.id }}/delete/" class="btn btn-sm btn-outline-danger">Удалить</a>
+  </div>
+  {% empty %}
+  <p>Нет лекций</p>
+  {% endfor %}
+</div>
+<p><a href="/admin/core/lecture/add/?module={{ module.id }}" class="btn btn-success">Добавить лекцию</a></p>
+
+<h4>Тестирование</h4>
+<div class="list-group mb-3">
+  {% for test in tests %}
+  <a href="{% url 'core:admin_test_detail' test.id %}" class="list-group-item list-group-item-action">
+    {{ test.name }}
+  </a>
+  {% empty %}
+  <p>Нет тестов</p>
+  {% endfor %}
+</div>
+<p><a href="/admin/core/test/add/?module={{ module.id }}" class="btn btn-success">Добавить тест</a></p>
+{% endblock %}

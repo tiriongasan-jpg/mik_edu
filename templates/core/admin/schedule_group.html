@@ -1,0 +1,90 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Расписание - {{ group.name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <a href="{% url 'core:admin_schedule' %}" class="btn btn-secondary mb-3">← Назад к группам</a>
+    <h2 class="mb-4">{{ group.name }} - Расписание</h2>
+    
+    <!-- Форма добавления нового занятия -->
+    <div class="card mb-4">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0">➕ Добавить занятие</h5>
+        </div>
+        <div class="card-body">
+            <form method="post" action="">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="add">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">День недели</label>
+                        <select name="day_of_week" class="form-control" required>
+                            <option value="">-- Выберите день --</option>
+                            {% for day_num, day_name in day_choices %}
+                                <option value="{{ day_num }}">{{ day_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <label class="form-label">Время</label>
+                        <input type="time" name="time" class="form-control" required>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Предмет</label>
+                        <input type="text" name="subject" class="form-control" required>
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <label class="form-label">Кабинет</label>
+                        <input type="text" name="room" class="form-control">
+                    </div>
+                    <div class="col-md-1 mb-3" style="display: flex; align-items: flex-end;">
+                        <button type="submit" class="btn btn-success w-100">Добавить</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Таблица расписания -->
+    {% if schedules %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>День</th>
+                        <th>Время</th>
+                        <th>Предмет</th>
+                        <th>Кабинет</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for schedule in schedules %}
+                        <tr>
+                            <td><strong>{{ schedule.get_day_of_week_display }}</strong></td>
+                            <td>{{ schedule.time }}</td>
+                            <td>{{ schedule.subject }}</td>
+                            <td>{{ schedule.room|default:"—" }}</td>
+                            <td>
+                                <form method="post" action="" style="display: inline;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="delete">
+                                    <input type="hidden" name="schedule_id" value="{{ schedule.id }}">
+                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Удалить это занятие?')">
+                                        ❌ Удалить
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            Расписание для этой группы еще не добавлено
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
